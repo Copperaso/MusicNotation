@@ -60,7 +60,12 @@ public class Ink implements I.Show {
                 // draw line with coordinates transformed
                 g.drawLine(points[i - 1].tx(), points[i - 1].ty(), points[i].tx(), points[i].ty());
             }
+        }
 
+        public void blend(Norm norm, int n) {
+            for (int i = 0; i < N; i++) {
+                points[i].blend(norm.points[i], n);
+            }
         }
     }
 

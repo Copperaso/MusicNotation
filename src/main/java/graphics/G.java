@@ -29,6 +29,7 @@ public class G {
         public void setT(V v) {set(v.tx(), v.ty());}
         public int tx() {return x * T.n / T.d + T.dx;} // transform x
         public int ty() {return y * T.n / T.d + T.dy;} // transform y
+        public void blend(V v, int k) {set((k * x + v.x) / (k + 1), (k * y + v. y) / (k + 1));}
 
         //-------Transform-------do a linear transform to coordinates
         public static class Transform {
