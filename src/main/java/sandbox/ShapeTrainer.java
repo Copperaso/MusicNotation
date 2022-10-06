@@ -59,22 +59,9 @@ public class ShapeTrainer extends Window {
     }
 
     public void mouseReleased(MouseEvent me) {
-        if (currState != ILLEGAL) {
-            Ink ink = new Ink();
-            Shape.Prototype proto;
-            if (pList == null) {
-                Shape s = new Shape(currName);
-                Shape.DB.put(currName, s);
-                pList = s.prototypes;
-            }
-            if (pList.bestDist(ink.norm) < UC.noMatchDist) {
-                proto = Shape.Prototype.List.bestMatch;
-                proto.blend(ink.norm);
-            } else {
-                proto = new Shape.Prototype();
-                pList.add(proto);
-            }
-        }
+        Ink ink = new Ink();
+        Shape.DB.train(currName, ink.norm);
+        setState();
         repaint();
     }
 
@@ -83,9 +70,8 @@ public class ShapeTrainer extends Window {
         System.out.println("type: " + c);
         // line ending character: 0x0D is ASCII return(ms), 0x0A line feed(linux/macos)
         currName = (c == ' ' || c == 0x0D ||c == 0x0A) ? "" : currName + c;
+        if (c == 0x0D ||c == 0x0A) {Shape.saveShapeDB();} // when type these, users want to save the shape to database
         setState();
         repaint();
     }
-
-
 }

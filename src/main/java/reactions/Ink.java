@@ -3,6 +3,7 @@ package reactions;
 import graphics.G;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import music.I;
 import music.UC;
@@ -27,19 +28,16 @@ public class Ink implements I.Show {
     }
 
     //-------------------Norm----------------------
-    public static class Norm extends G.PL{
+    public static class Norm extends G.PL implements Serializable {
         public static final int N = UC.normSampleSize;
         public static final int MAX = UC.normCoordinateSize;
         public static final G.VS NCS = new G.VS(0, 0, MAX, MAX);
 
         public Norm() {
             super(N);
-            G.PL temp = BUFFER.subSample(N);
+            BUFFER.subSample(this);
             G.V.T.set(BUFFER.bbox, NCS);
-            temp.transform();
-            for (int i = 0; i < N; i++) {
-                this.points[i].set(temp.points[i]);
-            }
+            this.transform();
         }
 
         public int dist(Norm n) {
@@ -49,7 +47,7 @@ public class Ink implements I.Show {
                 int dy = points[i].y - n.points[i].y;
                 res += dx * dx + dy * dy;
                 // do not take square root because it takes time and not efficiently work for int.
-                // we only need dist for compare at this point
+                // we only need dist for comparing at this point
             }
             return res;
         }
@@ -78,12 +76,11 @@ public class Ink implements I.Show {
 
         private Buffer() {super(MAX);}  // make a constructor private
 
-        public G.PL subSample(int k) {
-            G.PL res = new G.PL(k);
+        public void subSample(G.PL pl) {
+            int k = pl.size();
             for (int i = 0; i < k; i++) {
-                res.points[i].set(this.points[i * (n - 1) / (k - 1)]);
+                pl.points[i].set(this.points[i * (n - 1) / (k - 1)]);
             }
-            return res;
         }
 
         public void add(int x, int y) {if (n < MAX) {points[n++].set(x, y); bbox.add(x, y);}}

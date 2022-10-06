@@ -1,6 +1,7 @@
 package graphics;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
 public class G {
@@ -18,7 +19,7 @@ public class G {
     }
 
     //-------------------V-------------------------Vector
-    public static class V {
+    public static class V implements Serializable {
         public static Transform T = new Transform();
         public int x, y;
         public V(int x, int y) {this.set(x, y);} //constructor, use set() as helper method
@@ -102,7 +103,7 @@ public class G {
     }
 
     //-------------------PL----------------------poly line, an array of points
-    public static class PL {
+    public static class PL implements Serializable {
         public V[] points;
 
         public PL(int count) {             //constructor
