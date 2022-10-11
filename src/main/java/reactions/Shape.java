@@ -69,12 +69,24 @@ public class Shape implements Serializable {
             }
 
             // check if norm matches prototype, blend it or add it as new prototype to list
-            public void train(Ink.Norm norm) {
-                if (bestDist(norm) < UC.noMatchDist) {
-                    bestMatch.blend(norm);
+            public void train(Ink ink) {
+                if (isDeletePrototype(ink)) {return;}
+                if (bestDist(ink.norm) < UC.noMatchDist) {
+                    bestMatch.blend(ink.norm);
                 } else  {
                     add(new Shape.Prototype());
                 }
+            }
+
+            // If true, it deletes
+            public boolean isDeletePrototype(Ink ink) {
+                int DOT = UC.dotThreshold;
+                if (ink.vs.size.x > DOT || ink.vs.size.y > DOT) {return false;}
+                if (ink.vs.loc.y > m + w) {return false;} // m-margin, w-width
+                int iProto = ink.vs.loc.x / (m + w); // index of proto
+                if (iProto >= this.size()) {return false;}  // larger than protoList's size
+                remove(iProto);
+                return true;
             }
 
             // show and test
@@ -88,9 +100,7 @@ public class Shape implements Serializable {
                     g.drawString("" + p.nBlend, x, 20);
                 }
             }
-
         }
-
     }
 
     //-------------------Database class---------------------
@@ -102,8 +112,9 @@ public class Shape implements Serializable {
             if (!DB.containsKey(name)) {addNewShape(name);}
             return DB.get(name);
         }
-        public void train(String name, Ink.Norm norm) {
-            if (IsLegal(name)) {forceGet(name).prototypes.train(norm);}
+
+        public void train(String name, Ink ink) {
+            if (IsLegal(name)) {forceGet(name).prototypes.train(ink);}
         }
 
         public static boolean IsLegal(String name) {
@@ -127,7 +138,6 @@ public class Shape implements Serializable {
             }
             return res;
         }
-
 
         public static void save() {
             String fileName = UC.shapeDBFileName;

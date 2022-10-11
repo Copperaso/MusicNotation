@@ -12,6 +12,9 @@ import reactions.Shape;
 
 public class ShapeTrainer extends Window {
 
+    // run this class directly
+    public static void main(String[] args) {(Window.PANEL = new ShapeTrainer()).launch();}
+
     public ShapeTrainer() {
         super("ShapeTrainer", UC.initialWindowWidth, UC.initialWindowHeight);
     }
@@ -60,7 +63,7 @@ public class ShapeTrainer extends Window {
 
     public void mouseReleased(MouseEvent me) {
         Ink ink = new Ink();
-        Shape.DB.train(currName, ink.norm);
+        Shape.DB.train(currName, ink);
         setState();
         repaint();
     }
