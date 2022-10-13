@@ -93,16 +93,14 @@ public class Ink implements I.Show {
         @Override
         public void drag(int x, int y) {add(x, y);}
         @Override
-        public void up(int x, int y) {
-
-        }
+        public void up(int x, int y) {}
 
         @Override
         public void show(Graphics g) {
             this.drawN(g, n);
-            bbox.draw(g);
-            g.setColor(Color.BLUE);
-            this.drawNDots(g, n);
+//            bbox.draw(g);
+//            g.setColor(Color.BLUE);
+//            this.drawNDots(g, n);
         }
     }
 
