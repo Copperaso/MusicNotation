@@ -17,6 +17,12 @@ public abstract class Reaction implements I.React {
         if (shape == null) {System.out.println("Shape.DB doesn't know " + shapeName);}
     }
 
+    public static void nuke() {
+        // nuke() is resetting for undo
+        byShape = new Map();
+        initialReactions.enable();
+    }
+
     public void enable() {
         List list = byShape.getList(shape);
         if (!list.contains(this)){list.add(this);}
@@ -36,6 +42,7 @@ public abstract class Reaction implements I.React {
     public static class List extends ArrayList<Reaction> {
 
         public void addReaction(Reaction r) {add(r); r.enable();}
+        public void enable() {for (Reaction r : this) {r.enable();}}
         public void removeReaction(Reaction r) {remove(r); r.disable();}
 
         public void clearAll() {

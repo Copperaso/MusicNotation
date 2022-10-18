@@ -1,9 +1,12 @@
 package reactions;
 
 import graphics.G;
+import java.util.ArrayList;
 import music.I;
 
 public class Gesture {
+
+    public static List UNDO = new List();
 
     public static I.Area AREA = new I.Area() {
         @Override
@@ -19,8 +22,12 @@ public class Gesture {
             Gesture gesture = Gesture.getNew(ink); // can fail if unrecognized
             Ink.BUFFER.clear();
             if (gesture != null) {
-                Reaction r = Reaction.best(gesture); // can fail
-                if (r != null) {r.act(gesture);}
+                if (gesture.shape.name.equals("N-N")) {
+                    // because drag-up is not a normal gesture in written, so make this gesture to do undo act
+                    undo();
+                } else {
+                    gesture.doGesture();
+                }
             }
         }
     };
@@ -36,5 +43,38 @@ public class Gesture {
     public static Gesture getNew(Ink ink) { // can return null
         Shape s = Shape.recognize(ink);
         return (s == null) ? null : new Gesture(s, ink.vs);
+    }
+
+    private void redoGesture() {
+        Reaction r = Reaction.best(this);
+        if (r != null) {r.act(this);}
+    }
+
+    private void doGesture() {
+        Reaction r = Reaction.best(this);
+        if (r != null) {
+            UNDO.add(this);
+            r.act(this);
+        }
+    }
+
+    public static void undo() {
+        if (UNDO.size() > 0) {
+            UNDO.remove(UNDO.size() - 1);
+            Layer.nuke();
+            Reaction.nuke();
+            UNDO.redo();
+        }
+    }
+
+    //----------------List--------------------
+    public static class List extends ArrayList<Gesture> {
+
+        private void redo() {
+            for (Gesture gesture : this) {
+                gesture.redoGesture();
+            }
+        }
+
     }
 }
