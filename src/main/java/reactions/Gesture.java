@@ -22,6 +22,7 @@ public class Gesture {
             Gesture gesture = Gesture.getNew(ink); // can fail if unrecognized
             Ink.BUFFER.clear();
             if (gesture != null) {
+                System.out.println("Saw: " + gesture.shape.name); // can help to debug
                 if (gesture.shape.name.equals("N-N")) {
                     // because drag-up is not a normal gesture in written, so make this gesture to do undo act
                     undo();
