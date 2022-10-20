@@ -6,13 +6,15 @@ import java.awt.Graphics;
 import reactions.Mass;
 
 public class Staff extends Mass {
-    // E-W to add staff to exist system
     public Sys sys;
     public int iStaff;
     public Staff.Fmt fmt;
 
-    public Staff() {
+    public Staff(Sys sys, int iStaff, Staff.Fmt fmt) {
         super("BACK");
+        this.sys = sys;
+        this.iStaff = iStaff;
+        this.fmt = fmt;
     }
 
     //------------Fmt Format----------------------
