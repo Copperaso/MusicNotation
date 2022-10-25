@@ -14,7 +14,11 @@ import reactions.Layer;
 import reactions.Reaction;
 
 public class Music extends Window {
-    static {new Layer("BACK");new Layer("FORE");}
+    static {
+        new Layer("BACK");
+        new Layer("FORE");
+        new Layer("NOTE");
+    }
     public static Page PAGE;
     public static void main(String[] args) {(PANEL = new Music()).launch();}
 
