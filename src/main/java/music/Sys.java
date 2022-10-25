@@ -17,9 +17,18 @@ public class Sys extends Mass {
         this.page = page;
         this.iSys = iSys;
         this.fmt = fmt;
+        // the for loop fix bugs that cannot draw notes in systems other than first sys
+        for (int i = 0; i < fmt.size(); i++) {
+            addStaff(new Staff(this, i, fmt.get(i)));
+        }
+    }
+
+    public void addStaff(Staff staff) {
+        staffs.add(staff);
     }
 
     public int yTop() {return page.sysTop(iSys);}
+    public int yBot() {return staffs.get(staffs.size() - 1).yBot();} // last staff's bottom is the bottom of the system
 
     public void show(Graphics g) {
         int y = yTop(), x = PAGE.margins.left;
