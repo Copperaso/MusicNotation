@@ -13,4 +13,5 @@ public class UC {
     public static final int noBid = 1000;
     public static final int defaultStaffSpace = 8;
     public static final int barToMarginSnap = 20; // help to draw bar line at the end of sys/staff
+    public static String FontName = "sinfonia";
 }
