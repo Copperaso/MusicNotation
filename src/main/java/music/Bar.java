@@ -29,20 +29,22 @@ public class Bar extends Mass {
                 if (y2 > Bar.this.sys.yBot() + 20) {return UC.noBid;}
                 return Math.abs(x - Bar.this.x);
             }
-
             public void act(Gesture gesture) {
                 Bar.this.cycleType();
             }
         });
 
-        addReaction(new Reaction("S-S") { // set bar continues
-            // TODO
+        addReaction(new Reaction("DOT") {
             public int bid(Gesture gesture) {
-                return 0;
+                int x = gesture.vs.xM(), y = gesture.vs.yM();
+                if (y < Bar.this.sys.yTop() || y > Bar.this.sys.yBot()) {return UC.noBid;}
+                int dist = Math.abs(x - Bar.this.x);
+                if (dist > 3 * UC.defaultStaffSpace) {return UC.noBid;}
+                return dist;
             }
-            // TODO
-            public void act(Gesture gesture) {
 
+            public void act(Gesture gesture) {
+                if (gesture.vs.xM() < Bar.this.x) {Bar.this.toggleLeft();} else {Bar.this.toggleRight();}
             }
         });
     }
@@ -55,19 +57,19 @@ public class Bar extends Mass {
     public void toggleRight() {barType = barType^RIGHT;}
 
     public void show(Graphics g) {
-        int yTop = sys.yTop(), N = sys.fmt.size();
-        // test barTypes
-        if (barType == 0) {g.setColor(Color.BLACK);}
-        else if (barType == 1) {g.setColor(Color.RED);}
-        else if (barType == 2) {g.setColor(Color.GREEN);}
+        int sysTop = sys.yTop(), N = sys.fmt.size(), y1 = 0, y2 = 0; // y1, y2 is top and bottom of connected component.
+        boolean justSawBreak = true; // if saw break, start to draw a new barLine
         for (int i = 0; i < N; i++) {
             Staff.Fmt sf = sys.fmt.get(i);
-            int topLine = yTop + sys.fmt.staffOffset.get(i);
-            g.drawLine(x, topLine, x, topLine + sf.height());
+            int staffTop = sysTop + sys.fmt.staffOffset.get(i);
+            if (justSawBreak) {y1 = staffTop;}
+            y2 = staffTop + sf.height();
+            if (!sf.barContinues) {drawLines(g, x, y1, y2);}
+            justSawBreak = !sf.barContinues;
+            if (barType > 3) {drawDots(g, x, staffTop);}
         }
     }
 
-    // TODO: test below draw methods
     public static void wings(Graphics g, int x, int y1, int y2, int dx, int dy) { // draw wings
         g.drawLine(x, y1, x + dx, y1 - dy);
         g.drawLine(x, y2, x + dx, y2 + dy);
@@ -84,12 +86,24 @@ public class Bar extends Mass {
     public void drawDots(Graphics g, int x, int top) {
         int H = UC.defaultStaffSpace; // H is half distance between two neighbor lines in one staff
         if ((barType & LEFT) != 0) {
-            g.drawOval(x - 3 * H, top + 11 * H / 4, H / 2, H / 2);
-            g.drawOval(x - 3 * H, top + 19 * H / 4, H / 2, H / 2);
+            g.fillOval(x - 3 * H, top + 11 * H / 4, H / 2, H / 2);
+            g.fillOval(x - 3 * H, top + 19 * H / 4, H / 2, H / 2);
         }
         if ((barType & RIGHT) != 0) {
-            g.drawOval(x + 3 * H, top + 11 * H / 4, H / 2, H / 2);
-            g.drawOval(x + 3 * H, top + 19 * H / 4, H / 2, H / 2);
+            g.fillOval(x + 3 * H / 2, top + 11 * H / 4, H / 2, H / 2);
+            g.fillOval(x + 3 * H / 2 , top + 19 * H / 4, H / 2, H / 2);
+        }
+    }
+
+    public void drawLines(Graphics g, int x, int y1, int y2) {
+        int H = UC.defaultStaffSpace;
+        if (barType == 0) {thinBar(g, x, y1, y2);}
+        if (barType == 1) {thinBar(g, x, y1, y2); thinBar(g, x - H, y1, y2);}
+        if (barType == 2) {fatBar(g, x - H, y1, y2, H); thinBar(g, x - 2 * H, y1, y2);}
+        if (barType >= 4) {
+            fatBar(g, x - H, y1, y2, H); // all repeat fatBars
+            if ((barType & LEFT) != 0) {thinBar(g, x - 2 * H, y1, y2); wings(g, x - 2 * H, y1, y2, -H, H);}
+            if ((barType & RIGHT) != 0) {thinBar(g, x + H, y1, y2); wings(g, x + H, y1, y2, H, H);}
         }
     }
 }

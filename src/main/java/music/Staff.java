@@ -37,6 +37,39 @@ public class Staff extends Mass {
                 new Bar(Staff.this.sys, x);
             }
         });
+
+
+        addReaction(new Reaction("S-S") { // set bar continues
+            public int bid(Gesture gesture) {
+                if (Staff.this.sys.iSys != 0) { // only change barContinues in the first system
+                    return UC.noBid;
+                }
+                int y1 = gesture.vs.yL(), y2 = gesture.vs.yH(), iStaff = Staff.this.iStaff;
+                if (iStaff == PAGE.sysFmt.size() - 1) { // if current staff is the last staff, we don't want to continue
+                    return UC.noBid;
+                }
+                if (Math.abs(y1 - Staff.this.yBot()) > 20) {return UC.noBid;}
+                Staff nextStaff = Staff.this.sys.staffs.get(iStaff + 1);
+                if (Math.abs(y2 - nextStaff.yTop()) > 20) {return UC.noBid;}
+                return 10;
+            }
+            public void act(Gesture gesture) {
+                Staff.this.fmt.toggleBarContinues();
+            }
+        });
+
+        addReaction(new Reaction("SW-SW") { // adding Quarter note
+            public int bid(Gesture gesture) {
+                int x = gesture.vs.xM(), y = gesture.vs.yM();
+                if (x < PAGE.margins.left || x > PAGE.margins.right) {return UC.noBid;} // x is out of bounds
+                int H = Staff.this.fmt.H, top = Staff.this.yTop() - H, bot = Staff.this.yBot() + H;
+                if (y < top || y > bot) {return UC.noBid;} // y is out of bounds
+                return 10;
+            }
+            public void act(Gesture gesture) {
+                new Head(Staff.this, gesture.vs.xM(), gesture.vs.yM());
+            }
+        });
     }
 
     public int sysOff() {return this.sys.fmt.staffOffset.get(iStaff);}
@@ -48,11 +81,14 @@ public class Staff extends Mass {
     //------------Fmt Format----------------------
     public static class Fmt {
         public int nLines = 5; // every staff has 5 lines
-        public int H = 8;   // height, half distance between two lines
+        public int H = UC.defaultStaffSpace;   // height, half distance between two lines
+        public boolean barContinues = false;
 
         public int height() {
             return 2 * H * (nLines - 1);
         }
+
+        public void toggleBarContinues() {barContinues = !barContinues;}
 
         public void showAt(Graphics g, int y) {
             int LEFT = PAGE.margins.left, RIGHT = PAGE.margins.right;
