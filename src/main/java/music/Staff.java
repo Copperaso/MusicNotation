@@ -70,6 +70,20 @@ public class Staff extends Mass {
                 new Head(Staff.this, gesture.vs.xM(), gesture.vs.yM());
             }
         });
+
+        addReaction(new Reaction("W-S") { // add a quarter rest
+            public int bid(Gesture gesture) {
+                int x = gesture.vs.xL(), y = gesture.vs.yL();
+                if (x < PAGE.margins.left || x > PAGE.margins.right) {return UC.noBid;}
+                int H = Staff.this.fmt.H, top = Staff.this.yTop(), bot = Staff.this.yBot();
+                if (y < top || y > bot) {return UC.noBid;}
+                return 10;
+            }
+            public void act(Gesture gesture) {
+                Time t = Staff.this.sys.getTime(gesture.vs.xL());
+                new Rest(Staff.this, t);
+            }
+        });
     }
 
     public int sysOff() {return this.sys.fmt.staffOffset.get(iStaff);}
@@ -77,6 +91,14 @@ public class Staff extends Mass {
     public int yTop() {return this.sys.yTop() + this.sysOff();}
 
     public int yBot() {return this.yTop() + this.fmt.height();}
+
+    public int yLine(int n) {return yTop() + n * this.fmt.H;} // pass number of line in
+
+    public int lineOfY(int y) {
+        int bias = 100;
+        int top = yTop() - bias * fmt.H;
+        return (y - top + fmt.H / 2) / fmt.H - bias;
+    }
 
     //------------Fmt Format----------------------
     public static class Fmt {

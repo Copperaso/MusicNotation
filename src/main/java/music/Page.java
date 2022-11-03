@@ -37,7 +37,7 @@ public class Page extends Mass {
         addReaction(new Reaction("E-E") { // "E-E" will add a new system
             public int bid(Gesture gesture) {
                 int y = gesture.vs.yM();
-                int yBot = PAGE.sysTop(PAGE.sysList.size() - 1);
+                int yBot = PAGE.sysTop(PAGE.sysList.size());
                 if (y < yBot) {return UC.noBid;}
                 return 50;
             }

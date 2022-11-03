@@ -14,8 +14,9 @@ public class Head extends Mass {
         this.staff = staff;
         this.time = staff.sys.getTime(x);
         int H = staff.fmt.H;
-        int top = staff.yTop() - H;
-        this.line = (y - top - H / 2) / H - 1;
+//        int top = staff.yTop() - H;
+//        this.line = (y - top - H / 2) / H - 1;
+        this.line = staff.lineOfY(y);
         System.out.println("Line: " + line);
     }
 

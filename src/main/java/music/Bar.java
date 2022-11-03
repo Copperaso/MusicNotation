@@ -57,6 +57,7 @@ public class Bar extends Mass {
     public void toggleRight() {barType = barType^RIGHT;}
 
     public void show(Graphics g) {
+        g.setColor(Color.BLACK);
         int sysTop = sys.yTop(), N = sys.fmt.size(), y1 = 0, y2 = 0; // y1, y2 is top and bottom of connected component.
         boolean justSawBreak = true; // if saw break, start to draw a new barLine
         for (int i = 0; i < N; i++) {
