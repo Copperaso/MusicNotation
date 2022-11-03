@@ -11,17 +11,21 @@ public class Sys extends Mass {
     public Page page; // which page this sys belongs to
     public int iSys;
     public Sys.Fmt fmt;
+    public Time.List times;
 
     public Sys(Page page, int iSys, Sys.Fmt fmt) {
         super("BACK");
         this.page = page;
         this.iSys = iSys;
         this.fmt = fmt;
+        this.times = new Time.List(this);
         // the for loop fix bugs that cannot draw notes in systems other than first sys
         for (int i = 0; i < fmt.size(); i++) {
             addStaff(new Staff(this, i, fmt.get(i)));
         }
     }
+
+    public Time getTime(int x) {return times.getTime(x);}
 
     public void addStaff(Staff staff) {
         staffs.add(staff);
