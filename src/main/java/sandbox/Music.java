@@ -47,11 +47,10 @@ public class Music extends Window {
         Ink.BUFFER.show(g);
         Layer.ALL.show(g);
 
-//        if (PAGE != null) {
-//            // test drawing font, located at mid-line in five lines
-//            Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margins.top + 4 * UC.defaultStaffSpace);
-//            Glyph.HEAD_HALF.showAt(g, 8, 200, PAGE.margins.top + 4 * UC.defaultStaffSpace);
-//        }
+        // test
+//        int H = 32, y = 100 + 4 * H;
+//        Glyph.HEAD_Q.showAt(g, H, 200, y);
+//        g.drawRect(200, y - H, 24 * H / 10, 2 * H);
     }
 
     public void mousePressed(MouseEvent me) {Gesture.AREA.dn(me.getX(), me.getY()); repaint();}

@@ -64,7 +64,7 @@ public class ReactionTest extends Window {
                     }
                 }
                 @Override
-                public void act(Gesture gesture) {Box.this.delete();}
+                public void act(Gesture gesture) {Box.this.deleteMass();}
             });
 
             addReaction(new Reaction("DOT") {

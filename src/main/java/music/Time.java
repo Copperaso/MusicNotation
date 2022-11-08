@@ -5,10 +5,31 @@ import java.util.ArrayList;
 // Time class used to share x value in a system
 public class Time {
     public int x;
+    public Head.List heads = new Head.List();
 
     private Time(Sys sys, int x) {
         this.x = x;
         sys.times.add(this);
+    }
+
+    public void unStemHeads(int y1, int y2) {
+        for (Head h : heads) {
+            int y = h.y();
+            if (y > y1 && y < y2) {h.unStem();}
+        }
+    }
+
+    public void stemHeads(boolean isUp,int y1, int y2) {
+        Stem s = new Stem(isUp);
+        for (Head h : heads) {
+            int y = h.y();
+            if (y > y1 && y < y2) {h.joinStem(s);}
+        }
+        if (s.heads.size() == 0) { // should never happen
+            System.out.println("? - Empty head list "); // bug output
+        } else {
+            s.setWrongSides();
+        }
     }
 
     //------------------List-------------------------

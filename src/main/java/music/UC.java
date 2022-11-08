@@ -15,4 +15,7 @@ public class UC {
     public static final int barToMarginSnap = 20; // help to draw bar line at the end of sys/staff
     public static String FontName = "sinfonia";
     public static final int snapTime = 50;
+    public static final int augDotOffset = 24;
+    public static final int augDotSpace = 9;
+
 }
