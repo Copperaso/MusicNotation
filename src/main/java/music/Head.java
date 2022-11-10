@@ -7,7 +7,7 @@ import reactions.Gesture;
 import reactions.Mass;
 import reactions.Reaction;
 
-public class Head extends Mass {
+public class Head extends Mass implements Comparable<Head>{
 
     public Staff staff;
     public int line; // line is y coordinate
@@ -51,24 +51,46 @@ public class Head extends Mass {
                 }
             }
         });
+
+        addReaction(new Reaction("DOT") {
+            public int bid(Gesture gesture) {
+                if (Head.this.stem == null) {return UC.noBid;}
+                int xH = Head.this.x(), yH = Head.this.y(), h = Head.this.staff.fmt.H, w = Head.this.w();
+                int x = gesture.vs.xM(), y = gesture.vs.yM();
+                if (x < xH || x > xH + 2 * w || y < yH - h || y > yH + h) {return UC.noBid;}
+                return Math.abs(xH + w - x) + Math.abs(yH - y);
+            }
+            public void act(Gesture gesture) {
+                Head.this.stem.cycleDot();
+            }
+        });
     }
 
     public int w() {return 24 * staff.fmt.H / 10;}
 
     public void show(Graphics g) {
         int H = staff.fmt.H;
-        g.setColor(stem == null ? Color.RED : Color.BLACK);
+        g.setColor(wrongSide ? Color.RED : Color.BLACK);
         (forcedGlyph != null ? forcedGlyph : normalGlyph()).showAt(g, H, x(), y());
+        if (stem != null) {
+            int off = UC.augDotOffset, sp = UC.augDotSpace;
+            for (int i = 0; i < stem.nDot; i++) {
+                g.fillOval(time.x + off + i * sp, y() - 3 * H / 2, 2 * H / 3, 2 * H / 3);
+            }
+        }
     }
 
     public Glyph normalGlyph() {
-        // stub  TODO
+        if (stem == null) {return Glyph.HEAD_Q;}
+        if (stem.nFlag == -1) {return Glyph.HEAD_HALF;}
+        if (stem.nFlag == -2) {return Glyph.HEAD_W;}
         return Glyph.HEAD_Q;
     }
 
     public int x() {
-        // stub - placeholder TODO
-        return time.x;
+        int res = time.x;
+        if (wrongSide) {res += (stem != null && stem.isUp) ? w() : -w();}
+        return res;
     }
 
     public int y() { return staff.yLine(line);}
@@ -91,6 +113,11 @@ public class Head extends Mass {
         if (this.stem != null) {unStem();}
         s.heads.add(this);
         this.stem = s;
+    }
+
+    @Override
+    public int compareTo(Head h) {
+        return (this.staff.iStaff != h.staff.iStaff) ? (this.staff.iStaff - h.staff.iStaff) : (this.line - h.line);
     }
 
     //--------------List---------------------
