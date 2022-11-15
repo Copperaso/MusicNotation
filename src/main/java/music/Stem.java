@@ -1,17 +1,21 @@
 package music;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Collections;
 import reactions.Gesture;
 import reactions.Reaction;
 
-public class Stem extends Duration {
+public class Stem extends Duration implements Comparable<Stem> {
 
     public Head.List heads = new Head.List();
     public boolean isUp;
+    public Sys sys;
+    public Beam beam = null;
 
-    public Stem(boolean isUp) {
+    public Stem(Sys sys, boolean isUp) {
         this.isUp = isUp;
+        this.sys = sys;
 
         addReaction(new Reaction("E-E") { // increment flag on stem
             public int bid(Gesture gesture) {
@@ -79,7 +83,7 @@ public class Stem extends Duration {
         return h.time.x + (isUp ? h.w() : 0);
     }
 
-    public void deleteStem() {this.deleteMass();}
+    public void deleteStem() {this.deleteMass(); sys.stems.remove(this);}
 
     public void setWrongSides() {
         Collections.sort(heads);
@@ -93,5 +97,25 @@ public class Stem extends Duration {
             nh.wrongSide = (ph.staff == nh.staff) && (Math.abs(nh.line - ph.line) <= 1) && !ph.wrongSide;
             ph = nh;
         }
+    }
+
+    @Override
+    public int compareTo(Stem s) {return this.x() - s.x();}
+
+    //------------------List-----------------------------
+    public static class List extends ArrayList<Stem> {
+        public int yMin = 1000000, yMax = -1000000;
+
+        public void addStem(Stem s) {
+            this.add(s);
+            if (s.yLo() < yMin) {yMin = s.yLo();}
+            if (s.yHi() > yMax) {yMax = s.yHi();}
+        }
+
+        public boolean fastReject(int y1, int y2) {
+            return y1 > yMax || y2 < yMin;
+        }
+
+        public void sort() {Collections.sort(this);}
     }
 }

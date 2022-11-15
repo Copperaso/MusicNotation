@@ -19,8 +19,8 @@ public class Time {
         }
     }
 
-    public void stemHeads(boolean isUp,int y1, int y2) {
-        Stem s = new Stem(isUp);
+    public void stemHeads(Sys sys, boolean isUp,int y1, int y2) {
+        Stem s = new Stem(sys, isUp);
         for (Head h : heads) {
             int y = h.y();
             if (y > y1 && y < y2) {h.joinStem(s);}
@@ -29,6 +29,7 @@ public class Time {
             System.out.println("? - Empty head list "); // bug output
         } else {
             s.setWrongSides();
+            s.heads.get(0).staff.sys.stems.addStem(s); // s.heads.get(0).staff.sys is the system this stem attached to
         }
     }
 

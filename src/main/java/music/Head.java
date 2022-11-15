@@ -45,7 +45,7 @@ public class Head extends Mass implements Comparable<Head>{
                 int w = Head.this.w();
                 boolean isUp = x > (t.x + w / 2);
                 if (Head.this.stem == null) {
-                    t.stemHeads(isUp, y1, y2);
+                    t.stemHeads(Head.this.stem.sys, isUp, y1, y2);
                 } else {
                     t.unStemHeads(y1, y2);
                 }
