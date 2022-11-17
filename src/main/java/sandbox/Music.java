@@ -54,11 +54,11 @@ public class Music extends Window {
         Ink.BUFFER.show(g);
         Layer.ALL.show(g);
         // test Beam.setPoly and Beam.drawBeamStack
-        int h = 8, x1 = 100, x2 = 200;
-        Beam.setMasterBeam(x1, 100 + G.rnd(100), x2, 100 + G.rnd(100));
-        Beam.drawBeamStack(g, 0, 1, x1, x2, h);
-        g.setColor(Color.ORANGE);
-        Beam.drawBeamStack(g, 1, 3, x1 + 10, x2 - 10, h);
+//        int h = 8, x1 = 100, x2 = 200;
+//        Beam.setMasterBeam(x1, 100 + G.rnd(100), x2, 100 + G.rnd(100));
+//        Beam.drawBeamStack(g, 0, 1, x1, x2, h);
+//        g.setColor(Color.ORANGE);
+//        Beam.drawBeamStack(g, 1, 3, x1 + 10, x2 - 10, h);
     }
 
     public void mousePressed(MouseEvent me) {Gesture.AREA.dn(me.getX(), me.getY()); repaint();}
