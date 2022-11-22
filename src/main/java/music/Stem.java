@@ -100,6 +100,7 @@ public class Stem extends Duration implements Comparable<Stem> {
     public Head lastHead() {return heads.get(isUp ? 0 : heads.size() - 1);}
 
     public int yFirstHead() {
+        if (heads.size() == 0) {return 100;}
         Head h = firstHead();
         return h.staff.yLine(h.line);
     }
@@ -109,7 +110,7 @@ public class Stem extends Duration implements Comparable<Stem> {
         if (isInternal()) {beam.setMasterBeam(); return beam.yOfx(x());}
         Head h = lastHead();
         int line = h.line;
-        line += isUp ? - 7 : 7;
+        line += isUp ? -7 : 7;
         int flagInc = (nFlag > 2) ? 2 * (nFlag - 2) : 0;
         line += isUp ? - flagInc : flagInc;
         if ((isUp && line > 4) ||(!isUp && line < 4))  {line = 4;}
@@ -124,11 +125,16 @@ public class Stem extends Duration implements Comparable<Stem> {
     public int yHi() {return isUp ? yFirstHead() : yBeamEnd();}
 
     public int x() {
+        if (heads.size() == 0) {return 100;} // prevent next line to crash
         Head h = firstHead();
         return h.time.x + (isUp ? h.w() : 0);
     }
 
-    public void deleteStem() {this.deleteMass(); sys.stems.remove(this);}
+    public void deleteStem() {
+        if (heads.size() != 0) {System.out.println("Deleting stem that has heads on it.");} // debug statement
+        if (beam != null) {beam.removeStem(this);} // tell beam to delete this stem because stem is in the list of beam
+        this.deleteMass();
+        sys.stems.remove(this);}
 
     public void setWrongSides() {
         Collections.sort(heads);
@@ -146,6 +152,14 @@ public class Stem extends Duration implements Comparable<Stem> {
 
     @Override
     public int compareTo(Stem s) {return this.x() - s.x();}
+
+    @Override
+    public void decFlag() {
+        if (nFlag > -2) {nFlag--;}
+        if (nFlag <= 0 && beam != null) {
+            beam.deleteBeam();
+        }
+    }
 
     //------------------List-----------------------------
     public static class List extends ArrayList<Stem> {

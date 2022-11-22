@@ -112,4 +112,14 @@ public class Beam extends Mass {
             g.fillPolygon(poly);
         }
     }
+
+    public void removeStem(Stem stem) {
+        if (stem == first() || stem == last()) {
+            // remove the first or last stem will destroy the beam structure
+            deleteBeam();
+        } else {
+            stems.remove(stem);
+            stems.sort();
+        }
+    }
 }
