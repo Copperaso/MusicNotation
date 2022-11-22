@@ -59,6 +59,34 @@ public class Sys extends Mass {
                 }
             }
         });
+
+        addReaction(new Reaction("W-W") { // add beam
+            @Override
+            public int bid(Gesture gesture) {
+                int x1 = gesture.vs.xL(), y1 = gesture.vs.yL();
+                int x2 = gesture.vs.xH(), y2 = gesture.vs.yH();
+                if (stems.fastReject(y1, y2)) {return UC.noBid;}
+                ArrayList<Stem> temp = stems.allIntersectors(x1, y1, x2, y2);
+                if (temp.size() < 2) {return UC.noBid;}
+                System.out.println("Crossed " + temp.size() + " stems");
+                Beam beam = temp.get(0).beam;
+                for (Stem s : temp) {if (s.beam != beam) {return UC.noBid;}}
+                System.out.println("All stems share beam");
+                if (beam == null) {return UC.noBid;}
+                return 50;
+            }
+
+            @Override
+            public void act(Gesture gesture) {
+                int x1 = gesture.vs.xL(), y1 = gesture.vs.yL();
+                int x2 = gesture.vs.xH(), y2 = gesture.vs.yH();
+                ArrayList<Stem> temp = stems.allIntersectors(x1, y1, x2, y2);
+                Beam beam = temp.get(0).beam;
+                for (Stem s : temp) {
+                    s.decFlag();
+                }
+            }
+        });
     }
 
     public Time getTime(int x) {return times.getTime(x);}
